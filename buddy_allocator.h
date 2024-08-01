@@ -17,10 +17,10 @@ typedef struct {
 } BuddyAllocator;
 
 // initializes the buddy allocator, and checks that the buffer is large enough
-void BuddyAllocator_init(BuddyAllocator* allocator, char* memory, int memory_size, int min_bucket_size, char* bitmap_memory);
+void BuddyAllocator_init(BuddyAllocator* allocator, char* memory, int m_size, int min_bucket_size, char* bitmap_memory, int bitmap_memory_size);
 
-//allocates memory
+// allocates memory
 void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size);
 
-//releases allocated memory
+// releases allocated memory
 void BuddyAllocator_free(BuddyAllocator* alloc, void* mem);

@@ -2,13 +2,12 @@
 #include "bitmap.h"
 
 int main() {
-    // Test di impostazione e visualizzazione dei bit
+    // test di impostazione e visualizzazione dei bit
     
     char bits[1] = {0}; // bitmap di 8 bit
     Bitmap bitmap;
     Bitmap_init(&bitmap, bits, 8);
 
-    // Imposta alcuni bit e verifica i valori
     Bitmap_set(&bitmap, 1, 1);
     Bitmap_set(&bitmap, 3, 1);
     Bitmap_set(&bitmap, 5, 1);
@@ -31,8 +30,8 @@ int main() {
     printf("Test di impostazione e visualizzazione dei bit superato.\n");
     
 
-    // Test di limiti della bitmap
-    int index = 9;  // Indice fuori dai limiti
+    // test di limiti della bitmap
+    int index = 9;  // indice fuori dai limiti
     //Bitmap_set(&bitmap, index, 1);  // Questo dovrebbe causare un assert se decommentato
     //int value = Bitmap_show(&bitmap, index);  // Questo dovrebbe causare un assert se decommentato
     
