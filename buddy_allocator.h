@@ -11,16 +11,19 @@
 typedef struct {
     Bitmap bitmap; 
     int num_levels;
-    char* memory;           // Area di memoria da gestire
-    int min_bucket_size;    // Dimensione minima del blocco di memoria
-    int memory_size;        // Dimensione totale della memoria gestita
+    char* memory;           // area di memoria da gestire
+    int min_bucket_size;    // dimensione minima del blocco di memoria
+    int memory_size;        // dimensione totale della memoria gestita
 } BuddyAllocator;
 
-// initializes the buddy allocator, and checks that the buffer is large enough
+// inizializza il buddy allocator e esegue i vari controlli
 void BuddyAllocator_init(BuddyAllocator* allocator, char* memory, int m_size, int min_bucket_size, char* bitmap_memory, int bitmap_memory_size);
 
-// allocates memory
+// alloca la memoria
 void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size);
 
-// releases allocated memory
+// rilascia la memoria allocata 
 void BuddyAllocator_free(BuddyAllocator* alloc, void* mem);
+
+// funzione ausiliaria che aggiorna il valore dei figli
+void Agg_children(Bitmap *bit_map, int bit_num, int status);
