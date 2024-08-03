@@ -126,10 +126,11 @@ void BuddyAllocator_free(BuddyAllocator* allocator, void* mem) {
         printf("!il blocco non è stato ancora allocato!");
         return;
     }
-    if (mem <  allocator->memory || mem >= allocator->memory + allocator->memory_size) {
+    if ((char*)mem < allocator->memory || (char*)mem >= allocator->memory + allocator->memory_size) {
         printf("!il blocco non è nei margini!");
         return;
     }
+
 
     // Recupera l'indice del blocco dalla memoria
     int* block_ptr = (int*)mem - 1;
@@ -162,7 +163,7 @@ void BuddyAllocator_free(BuddyAllocator* allocator, void* mem) {
 
 void Agg_children(Bitmap *bit_map, int bit_num, int status){
   if (bit_num < bit_map->n_bits){
-    BitMap_set(bit_map, bit_num, status);
+    Bitmap_set(bit_map, bit_num, status);
     Agg_children(bit_map, 2 * bit_num + 1, status);  //figlio sinistro
     Agg_children(bit_map, 2 * bit_num + 2, status);  //figlio destro
   }

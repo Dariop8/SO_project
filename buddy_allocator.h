@@ -3,11 +3,6 @@
 
 #define MAX_LEVELS 16 
 
-#define PAGE_SIZE 4096 // 4096 byte (4 KB) dimensione classica di una pagina
-#define MAX_BUDDY_SIZE (PAGE_SIZE)
-#define MEMORY_SIZE 1048576  // 1 MB = 1048576 byte
-#define MIN_BUCKET_SIZE (MEMORY_SIZE>>(MAX_LEVELS))
-
 typedef struct {
     Bitmap bitmap; 
     int num_levels;
