@@ -19,6 +19,7 @@ int buddyIdx(int idx){
 
 // indice del padre del nodo idx
 int parentIdx(int idx){
+    if (idx==0) return -1;
     return (int)(idx-1)/2;
 }
 
