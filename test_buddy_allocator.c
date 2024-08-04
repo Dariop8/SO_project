@@ -78,6 +78,11 @@ int main() {
     printf("\nBitmap dopo deallocazione del blocco da 64 byte:\n");
     print_bitmap(&allocator.bitmap, allocator.num_levels);
 
+    // deallocazione del blocco da 8 byte
+    BuddyAllocator_free(&allocator, block5);
+    printf("\nBitmap dopo deallocazione del blocco da 8 byte:\n");
+    print_bitmap(&allocator.bitmap, allocator.num_levels);
+
     // allocazione e deallocazione consecutiva di blocchi da 8 byte
     void* blocks[16];
     for (int i = 0; i < 16; i++) {

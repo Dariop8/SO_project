@@ -15,10 +15,10 @@ typedef struct {
 void BuddyAllocator_init(BuddyAllocator* allocator, char* memory, int m_size, int min_bucket_size, char* bitmap_memory, int bitmap_memory_size);
 
 // alloca la memoria
-void* BuddyAllocator_malloc(BuddyAllocator* alloc, int size);
+void* BuddyAllocator_malloc(BuddyAllocator* allocator, int size);
 
 // rilascia la memoria allocata 
-void BuddyAllocator_free(BuddyAllocator* alloc, void* mem);
+void BuddyAllocator_free(BuddyAllocator* allocator, void* mem);
 
 // funzione ausiliaria che aggiorna il valore dei figli
 void Agg_children(Bitmap *bit_map, int bit_num, int status);
