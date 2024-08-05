@@ -11,18 +11,6 @@
 #define MEMORY_SIZE 256
 #define MIN_BUCKET_SIZE 8
 
-void print_bitmap(Bitmap* bitmap, int num_levels) {
-    int index = 0;
-    for (int level = 0; level < num_levels; level++) {
-        int nodes = 1 << level;
-        for (int node = 0; node < nodes; node++) {
-            printf("%d ", Bitmap_show(bitmap, index));
-            index++;
-        }
-        printf("\n");
-    }
-}
-
 int main() {
     // memoria principale e bitmap
     char memory[MEMORY_SIZE];

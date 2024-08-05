@@ -169,3 +169,15 @@ void Agg_children(Bitmap *bit_map, int bit_num, int status){
     Agg_children(bit_map, 2 * bit_num + 2, status);  //figlio destro
   }
 }
+
+void print_bitmap(Bitmap* bitmap, int num_levels) {
+    int index = 0;
+    for (int level = 0; level < num_levels; level++) {
+        int nodes = 1 << level;
+        for (int node = 0; node < nodes; node++) {
+            printf("%d ", Bitmap_show(bitmap, index));
+            index++;
+        }
+        printf("\n");
+    }
+}

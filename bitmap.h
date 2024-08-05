@@ -10,7 +10,7 @@ typedef struct {
 int Bitmap_dim(int n_bits);
 
 //funzione che inizializza la bitmap con la dimensione specificata
-Bitmap Bitmap_init(Bitmap* bitmap, char* bits, int n_bits);
+void Bitmap_init(Bitmap* bitmap, char* bits, int n_bits);
 
 //funzione che imposta un bit specifico nella bitmap ad un valore value (0 o 1)
 void Bitmap_set(Bitmap* bitmap, int index, int value);

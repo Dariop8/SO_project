@@ -7,13 +7,12 @@ int Bitmap_dim(int n_bits) {
     return (n_bits + 7) / 8;  
 }
 
-Bitmap Bitmap_init(Bitmap* bitmap, char* bits, int n_bits) {
+void Bitmap_init(Bitmap* bitmap, char* bits, int n_bits) {
     bitmap->bits = bits;
     bitmap->n_bits = n_bits;
     for (int i = 0; i < Bitmap_dim(n_bits); i++) {
         bitmap->bits[i] = 0; // inizializzo tutti i bit a 0
     }
-    return *bitmap;
 }
 
 void Bitmap_set(Bitmap* bitmap, int index, int value) {

@@ -9,7 +9,12 @@ void MyAllocator_init(MyAllocator* allocator) {
 
     BuddyAllocator_init(&allocator->buddy_allocator, buddy_memory, MEMORY_SIZE, MIN_BUCKET_SIZE, bitmap_memory, BUFFER_SIZE);
     
-    allocator->mmap_list = NULL;
+    for (int i = 0; i < MAX_ALLOCS; i++) {
+        allocator->mmap_nodes[i].mem = NULL;
+        allocator->mmap_nodes[i].size = 0;
+    }
+
+    allocator->mmap_num = 0;
 }
 
 void* MyAllocator_malloc(MyAllocator* allocator, int size) {
@@ -24,20 +29,20 @@ void* MyAllocator_malloc(MyAllocator* allocator, int size) {
             return NULL;
         }
 
-        // aggiungo l'allocazione alla linked list
-        MmapNode* new_node = (MmapNode*)mmap(NULL, sizeof(MmapNode), PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-        if (new_node == MAP_FAILED) {
-            printf("!errore con mmap per il nodo della linked list!\n");
-            munmap(mem, size);
-            return NULL;
+        // aggiungo l'allocazione all'array mmap_nodes
+        for (int i = 0; i < MAX_ALLOCS; i++) {
+            if (allocator->mmap_nodes[i].mem == NULL) {
+                allocator->mmap_nodes[i].mem = mem;
+                allocator->mmap_nodes[i].size = size;
+                allocator->mmap_num++;
+                return mem;
+            }
         }
 
-        new_node->mem = mem;
-        new_node->size = size;
-        new_node->next = allocator->mmap_list;
-        allocator->mmap_list = new_node;
-
-        return mem;
+        // già raggiunto il numero massimo di allocazioni con mmmap
+        munmap(mem, size);
+        printf("!allocazione non avvenuta, numero massimo raggiunto!\n");
+        return NULL;
     }
 }
 
@@ -47,16 +52,14 @@ void MyAllocator_free(MyAllocator* allocator, void* mem, size_t size) {
         BuddyAllocator_free(&allocator->buddy_allocator, mem);
     } else {
         // bisogna usare munmap
-        MmapNode** node = &allocator->mmap_list;
-        while (*node) {
-            if ((*node)->mem == mem) {
-                MmapNode* node_app = *node;
-                *node = (*node)->next;
-                munmap(mem, node_app->size);
-                munmap(node_app, sizeof(MmapNode));
+        for (int i = 0; i < MAX_ALLOCS; i++) {
+            if (allocator->mmap_nodes[i].mem == mem) {
+                munmap(mem, allocator->mmap_nodes[i].size);
+                allocator->mmap_nodes[i].mem = NULL;
+                allocator->mmap_nodes[i].size = 0;
+                allocator->mmap_num--;
                 return;
             }
-            node = &(*node)->next;
         }
     }
 }
