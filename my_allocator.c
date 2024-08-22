@@ -46,7 +46,7 @@ void* MyAllocator_malloc(MyAllocator* allocator, int size) {
     }
 }
 
-void MyAllocator_free(MyAllocator* allocator, void* mem, size_t size) {
+void MyAllocator_free(MyAllocator* allocator, void* mem, int size) {
     if (size < PAGE_SIZE / 4) {
         // bisogna usare il buddy allocator
         BuddyAllocator_free(&allocator->buddy_allocator, mem);
