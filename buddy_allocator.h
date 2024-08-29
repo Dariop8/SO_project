@@ -23,4 +23,5 @@ void BuddyAllocator_free(BuddyAllocator* allocator, void* mem);
 // funzione ausiliaria che aggiorna il valore dei figli
 void Agg_children(Bitmap *bit_map, int bit_num, int status);
 
+// funzione banale per la stampa della bitmap
 void print_bitmap(Bitmap* bitmap, int num_levels);

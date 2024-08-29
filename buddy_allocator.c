@@ -11,7 +11,7 @@ int levelIdx(int idx) {
 // indice del buddy del nodo idx
 int buddyIdx(int idx){
     if (idx == 0) return 0;
-    if (idx&0x1){
+    if (idx&0x1){ // vedo se idx è dispari controllando l'ultimo bit 
         return idx+1;
     }
     return idx-1;
@@ -71,7 +71,7 @@ void BuddyAllocator_init(BuddyAllocator* allocator, char* memory, int m_size, in
 
     allocator->memory = memory;
 
-    int n_bits = (1 << num_levels) - 1; // Numero totale di nodi in un albero binario completo 2^h - 1
+    int n_bits = (1 << num_levels) - 1; // numero totale di nodi in un albero binario completo (2^h) - 1
     assert(bitmap_memory_size >= Bitmap_dim(n_bits));
     Bitmap_init(&allocator->bitmap, bitmap_memory, n_bits);
 }
@@ -98,7 +98,8 @@ void* BuddyAllocator_malloc(BuddyAllocator* allocator, int size) {
     while (index < first_in_level(level + 1)) {
         if (Bitmap_show(&allocator->bitmap, index) == 0) {
             // trovato, aggiorno la bitmap
-            Bitmap_set(&allocator->bitmap, index, 1);
+            Bitmap_set(&allocator->bitmap, index, 1); // credo che non serva
+            // propago l'aggiornamento ai nodi figli
             Agg_children(&allocator->bitmap, index, 1);
 
             // propago l'aggiornamento ai nodi genitori
@@ -109,7 +110,7 @@ void* BuddyAllocator_malloc(BuddyAllocator* allocator, int size) {
             }
 
             // memorizzo l'indice del blocco all'inizio del blocco di memoria
-            int* block_ptr = (int*)(allocator->memory + (index - first_in_level(level)) * block_size);
+            int* block_ptr = (int*)(allocator->memory + (index - first_in_level(level)) * block_size); // dal disegno nelle slide
             *block_ptr = index;
 
             // restituisco il puntatore alla memoria, subito dopo l'indice
@@ -119,6 +120,7 @@ void* BuddyAllocator_malloc(BuddyAllocator* allocator, int size) {
     }
 
     // nessun blocco disponibile
+    printf("!nessun blocco disponibile!");
     return NULL; 
 }
 
@@ -132,8 +134,7 @@ void BuddyAllocator_free(BuddyAllocator* allocator, void* mem) {
         return;
     }
 
-
-    // Recupera l'indice del blocco dalla memoria
+    // recupero l'indice del blocco dalla memoria
     int* block_ptr = (int*)mem - 1;
     int index = *block_ptr;
 
@@ -150,7 +151,7 @@ void BuddyAllocator_free(BuddyAllocator* allocator, void* mem) {
     }
 
     // segno il nodo e i suoi figli come liberi nella bitmap
-    Bitmap_set(&allocator->bitmap, index, 0);
+    Bitmap_set(&allocator->bitmap, index, 0); // credo che non serva
     Agg_children(&allocator->bitmap, index, 0);
 
     // faccio il merge dei buddy se possibile
@@ -165,8 +166,8 @@ void BuddyAllocator_free(BuddyAllocator* allocator, void* mem) {
 void Agg_children(Bitmap *bit_map, int bit_num, int status){
   if (bit_num < bit_map->n_bits){
     Bitmap_set(bit_map, bit_num, status);
-    Agg_children(bit_map, 2 * bit_num + 1, status);  //figlio sinistro
-    Agg_children(bit_map, 2 * bit_num + 2, status);  //figlio destro
+    Agg_children(bit_map, 2 * bit_num + 1, status);  // figlio sinistro
+    Agg_children(bit_map, 2 * bit_num + 2, status);  // figlio destro
   }
 }
 

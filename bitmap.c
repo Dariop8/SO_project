@@ -15,10 +15,12 @@ void Bitmap_init(Bitmap* bitmap, char* bits, int n_bits) {
     }
 }
 
+// scrittura e lettura dei bit come per arduino
+
 void Bitmap_set(Bitmap* bitmap, int index, int value) {
     int byte_index = index / 8; //indice del byte all'interno di bits
     int bit_index = index % 8; // indice del bit all'interno di byte_index
-    assert(byte_index >= 0 && byte_index < Bitmap_dim(bitmap->n_bits)); //indice fuori dai limiti
+    assert(byte_index >= 0 && byte_index < Bitmap_dim(bitmap->n_bits)); // indice fuori dai limiti
     if (value) {
         bitmap->bits[byte_index] |= (1 << bit_index); // imposto il bit a 1
     } else {
@@ -29,7 +31,7 @@ void Bitmap_set(Bitmap* bitmap, int index, int value) {
 int Bitmap_show(Bitmap* bitmap, int index) {
     int byte_index = index / 8;
     int bit_index = index % 8;
-    assert(byte_index >= 0 && byte_index < Bitmap_dim(bitmap->n_bits)); //indice fuori dai limiti
-    int ris = (bitmap->bits[byte_index] & (1 << bit_index)) != 0; //valore del bit
+    assert(byte_index >= 0 && byte_index < Bitmap_dim(bitmap->n_bits)); // indice fuori dai limiti
+    int ris = (bitmap->bits[byte_index] & (1 << bit_index)) != 0; // valore del bit
     return ris; 
 }
