@@ -25,4 +25,6 @@ void MyAllocator_init(MyAllocator* allocator);
 
 void* MyAllocator_malloc(MyAllocator* allocator, int size);
 
-void MyAllocator_free(MyAllocator* allocator, void* mem, int size);
+// void MyAllocator_free(MyAllocator* allocator, void* mem, int size);
+
+void MyAllocator_free(MyAllocator* allocator, void* mem);
