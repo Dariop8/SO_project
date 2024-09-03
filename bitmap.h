@@ -3,7 +3,7 @@
 
 typedef struct {
     char* bits;   // array di bit
-    int n_bits;     // numero di bit nella bitmap
+    int n_bits;   // numero di bit nella bitmap
 } Bitmap;
 
 // funzione che calcola e restituisce la dimensione in bytes necessaria per memorizzare i bits dati in input

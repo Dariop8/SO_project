@@ -20,9 +20,9 @@ int main() {
 
     // array per tenere traccia delle allocazioni
     void* allocations[MEMORY_SIZE / MIN_BUCKET_SIZE];  
-    // numero di allocazioni effettuate
+    // numero di allocazioni 
     int alloc_count = 0;  
-    // buffer per i comandi inseriti dall'utente
+    // buffer per i comandi inseriti 
     char command[256]; 
 
     while (true) {
@@ -55,6 +55,8 @@ int main() {
             alloc_count = 0;
             printf("Deallocazione completata.\n");
             print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
+
+            printf("Numero di allocazioni con mmap attive: %d\n", allocator.mmap_num);
         } else if (strncmp(command, "exit", 4) == 0) {
             printf("Uscita dal programma...\n");
             break;

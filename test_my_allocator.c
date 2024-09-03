@@ -15,7 +15,7 @@ int main() {
     print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
 
     // Test 1: Allocazione valida di una piccola dimensione
-    printf("Test 1: Allocazione valida di una piccola dimensione\n");
+    printf("----------Test 1: Allocazione valida di una piccola dimensione----------\n");
     void* ptr1 = MyAllocator_malloc(&allocator, MIN_BUCKET_SIZE / 2);
     if (ptr1) {
         printf("Allocazione riuscita: %p\n", ptr1);
@@ -25,55 +25,48 @@ int main() {
     }
 
     // Test 2: Allocazione valida di una grande dimensione
-    printf("Test 2: Allocazione valida di una grande dimensione\n");
+    printf("----------Test 2: Allocazione valida di una grande dimensione----------\n");
     void* ptr2 = MyAllocator_malloc(&allocator, PAGE_SIZE);
     if (ptr2) {
         printf("Allocazione riuscita: %p\n", ptr2);
-        // Deallocazione immediata
         printf("Deallocazione immediata di ptr2: %p\n", ptr2);
-        // MyAllocator_free(&allocator, ptr2, PAGE_SIZE);
         MyAllocator_free(&allocator, ptr2);
     } else {
         printf("Allocazione fallita\n");
     }
 
     // Test 3: Allocazione invalida di una dimensione negativa
-    printf("Test 3: Allocazione invalida di una dimensione negativa\n");
+    printf("----------Test 3: Allocazione invalida di una dimensione negativa----------\n");
     void* ptr3 = MyAllocator_malloc(&allocator, -100);
     if (ptr3) {
         printf("Allocazione riuscita: %p (non dovrebbe succedere)\n", ptr3);
-        // Deallocazione immediata
         printf("Deallocazione immediata di ptr3: %p\n", ptr3);
-        // MyAllocator_free(&allocator, ptr3, -100);
         MyAllocator_free(&allocator, ptr3);
     } else {
         printf("Allocazione fallita (atteso)\n");
     }
 
     // Test 4: Rilascio di un'allocazione valida piccola
-    printf("Test 4: Rilascio di un'allocazione valida piccola\n");
+    printf("----------Test 4: Rilascio di un'allocazione valida piccola----------\n");
     if (ptr1) {
         printf("Deallocazione di ptr1: %p\n", ptr1);
-        // MyAllocator_free(&allocator, ptr1, MIN_BUCKET_SIZE / 2);
         MyAllocator_free(&allocator, ptr1);
         print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
     }
 
     // Test 5: Rilascio invalido di un puntatore nullo
-    printf("Test 5: Rilascio invalido di un puntatore nullo\n");
-    // MyAllocator_free(&allocator, NULL, 0);
+    printf("----------Test 5: Rilascio invalido di un puntatore nullo----------\n");
     MyAllocator_free(&allocator, NULL);
     printf("Rilascio di un puntatore nullo (atteso)\n");
 
     // Test 6: Rilascio invalido di un puntatore non allocato
-    printf("Test 6: Rilascio invalido di un puntatore non allocato\n");
-    int dummy;
-    //MyAllocator_free(&allocator, &dummy, sizeof(dummy));
-    MyAllocator_free(&allocator, &dummy);
+    printf("----------Test 6: Rilascio invalido di un puntatore non allocato----------\n");
+    int rand;
+    MyAllocator_free(&allocator, &rand);
     printf("Rilascio di un puntatore non allocato (atteso)\n");
 
     // Test 7: Allocazione valida ripetuta per riempire il buddy allocator
-    printf("Test 7: Allocazione valida ripetuta per riempire il buddy allocator\n");
+    printf("----------Test 7: Allocazione valida ripetuta per riempire il buddy allocator----------\n");
     void* allocations[MEMORY_SIZE / MIN_BUCKET_SIZE];
     int success_count = 0;
     for (int i = 0; i < (MEMORY_SIZE / MIN_BUCKET_SIZE); i++) {
@@ -88,7 +81,7 @@ int main() {
     print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
 
     // Test 8: Allocazione di una piccola dimensione con buddy allocator pieno
-    printf("Test 8: Allocazione di una piccola dimensione con buddy allocator pieno\n");
+    printf("----------Test 8: Allocazione di una piccola dimensione con buddy allocator pieno----------\n");
     void* ptr4 = MyAllocator_malloc(&allocator, MIN_BUCKET_SIZE / 2);
     if (ptr4) {
         printf("Allocazione riuscita: %p\n", ptr4);
@@ -98,61 +91,49 @@ int main() {
     }
 
     // Deallocazione di tutte le allocazioni fatte nel buddy allocator
-    printf("Deallocazione di tutte le allocazioni fatte nel buddy allocator\n");
+    printf("----------Deallocazione di tutte le allocazioni fatte nel buddy allocator----------\n");
     for (int i = 0; i < success_count; i++) {
-        // MyAllocator_free(&allocator, allocations[i], MIN_BUCKET_SIZE / 2);
         MyAllocator_free(&allocator, allocations[i]);
     }
     printf("Deallocazione completata delle allocazioni nel buddy allocator\n");
+    print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
 
-    // Test 9: Allocazione valida di una piccola dimensione (minima possibile)
-    printf("Test 9: Allocazione valida di una piccola dimensione (minima possibile)\n");
-    void* ptr5 = MyAllocator_malloc(&allocator, MIN_BUCKET_SIZE / 4);
+    // Test 9: Allocazione valida di una grande dimensione (esattamente 1/4 della dimensione della pagina - 4 byte)
+    printf("----------Test 9: Allocazione valida di una grande dimensione (esattamente 1/4 della dimensione della pagina - 4 byte quindi usa il buddy)----------\n");
+    void* ptr5 = MyAllocator_malloc(&allocator, (PAGE_SIZE / 4)-4);
     if (ptr5) {
-        printf("Allocazione riuscita: %p\n", ptr5);
+        printf("Allocazione riuscita: %p\n", ptr1);
         print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
+        printf("Deallocazione di ptr5: %p\n", ptr5);
+        MyAllocator_free(&allocator, ptr5);
     } else {
         printf("Allocazione fallita\n");
     }
 
     // Test 10: Allocazione valida di una grande dimensione (esattamente 1/4 della dimensione della pagina)
-    printf("Test 10: Allocazione valida di una grande dimensione (esattamente 1/4 della dimensione della pagina)\n");
+    printf("----------Test 10: Allocazione valida di una grande dimensione (esattamente 1/4 della dimensione della pagina quindi usa mmap)----------\n");
     void* ptr6 = MyAllocator_malloc(&allocator, PAGE_SIZE / 4);
     if (ptr6) {
         printf("Allocazione riuscita: %p\n", ptr6);
-        // Deallocazione immediata
         printf("Deallocazione immediata di ptr6: %p\n", ptr6);
-        // MyAllocator_free(&allocator, ptr6, PAGE_SIZE / 4);
         MyAllocator_free(&allocator, ptr6);
     } else {
         printf("Allocazione fallita\n");
     }
 
-    // Test 11: Allocazione esatta di una dimensione uguale alla dimensione di una pagina (usa mmap)
-    printf("Test 11: Allocazione esatta di una dimensione uguale alla dimensione di una pagina (usa mmap)\n");
+    // Test 11: Allocazione esatta di una dimensione uguale alla dimensione di una pagina
+    printf("----------Test 11: Allocazione esatta di una dimensione uguale alla dimensione di una pagina (usa mmap)----------\n");
     void* ptr7 = MyAllocator_malloc(&allocator, PAGE_SIZE);
     if (ptr7) {
         printf("Allocazione riuscita: %p\n", ptr7);
-        // Deallocazione immediata
         printf("Deallocazione immediata di ptr7: %p\n", ptr7);
-        // MyAllocator_free(&allocator, ptr7, PAGE_SIZE);
         MyAllocator_free(&allocator, ptr7);
     } else {
         printf("Allocazione fallita\n");
     }
 
-    // Test 12: Allocazione di una dimensione leggermente inferiore a 1/4 della dimensione di una pagina
-    printf("Test 12: Allocazione di una dimensione leggermente inferiore a 1/4 della dimensione di una pagina\n");
-    void* ptr8 = MyAllocator_malloc(&allocator, (PAGE_SIZE / 4) - 1);
-    if (ptr8) {
-        printf("Allocazione riuscita: %p\n", ptr8);
-        print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
-    } else {
-        printf("Allocazione fallita\n");
-    }
-
-    // Test 13: Allocazione grande ripetuta (diverse mmap consecutive)
-    printf("Test 13: Allocazione grande ripetuta (diverse mmap consecutive)\n");
+    // Test 12: Allocazione grande ripetuta (diverse mmap consecutive)
+    printf("----------Test 12: Allocazione grande ripetuta (diverse mmap consecutive per raggiungere il limite)----------\n");
     void* mmap_allocations[MAX_ALLOCS];
     int mmap_count = 0;
     for (int i = 0; i < MAX_ALLOCS; i++) {
@@ -166,8 +147,8 @@ int main() {
         }
     }
 
-    // Test 14: Allocazione grande oltre il numero massimo
-    printf("Test 14: Allocazione grande oltre il numero massimo\n");
+    // Test 13: Allocazione grande oltre il numero massimo
+    printf("----------Test 13: Allocazione grande oltre il numero massimo----------\n");
     void* ptr11 = MyAllocator_malloc(&allocator, PAGE_SIZE);
     if (ptr11) {
         printf("Allocazione riuscita: %p\n (inatteso)", ptr11);
@@ -175,55 +156,31 @@ int main() {
         printf("Allocazione fallita (atteso)\n");
     }
 
-    // Test 15: Rilascio delle allocazioni mmap consecutive
-    printf("Test 15: Rilascio delle allocazioni mmap consecutive\n");
+    // Test 14: Rilascio delle allocazioni mmap consecutive
+    printf("----------Test 14: Rilascio delle allocazioni mmap consecutive----------\n");
     for (int i = 0; i < mmap_count; i++) {
-        //MyAllocator_free(&allocator, mmap_allocations[i], PAGE_SIZE * (i + 1));
         MyAllocator_free(&allocator, mmap_allocations[i]);
     }
     printf("Deallocazione completata delle allocazioni mmap consecutive\n");
 
-    // Test 16: Allocazione di una dimensione non potenza di 2
-    printf("Test 16: Allocazione di una dimensione non potenza di 2\n");
+    // Test 15: Allocazione di una dimensione non potenza di 2
+    printf("----------Test 15: Allocazione di una dimensione non potenza di 2----------\n");
     void* ptr9 = MyAllocator_malloc(&allocator, MIN_BUCKET_SIZE / 3);
     if (ptr9) {
         printf("Allocazione riuscita: %p\n", ptr9);
         print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
-        // Deallocazione immediata
         printf("Deallocazione immediata di ptr9: %p\n", ptr9);
-        // MyAllocator_free(&allocator, ptr9, MIN_BUCKET_SIZE / 3);
         MyAllocator_free(&allocator, ptr9);
     } else {
         printf("Allocazione fallita\n");
     }
 
-    // Test 17: Allocazione di una grande dimensione (più di una pagina)
-    printf("Test 17: Allocazione di una grande dimensione (più di una pagina)\n");
-    void* ptr10 = MyAllocator_malloc(&allocator, PAGE_SIZE + 1);
-    if (ptr10) {
-        printf("Allocazione riuscita: %p\n", ptr10);
-        // Deallocazione immediata
-        printf("Deallocazione immediata di ptr10: %p\n", ptr10);
-        // MyAllocator_free(&allocator, ptr10, PAGE_SIZE + 1);
-        MyAllocator_free(&allocator, ptr10);
-    } else {
-        printf("Allocazione fallita\n");
-    }
-
-    // Deallocazione finale per i puntatori rimasti
-    if (ptr5) {
-        printf("Deallocazione di ptr5: %p\n", ptr5);
-        //MyAllocator_free(&allocator, ptr5, MIN_BUCKET_SIZE / 4);
-        MyAllocator_free(&allocator, ptr5);
-    }
-    if (ptr8) {
-        printf("Deallocazione di ptr8: %p\n", ptr8);
-        // MyAllocator_free(&allocator, ptr8, (PAGE_SIZE / 4) - 1);
-        MyAllocator_free(&allocator, ptr8);
-    }
+    printf("------------------------------------\n");
 
     printf("Bitmap finale:\n");
     print_bitmap(&allocator.buddy_allocator.bitmap, allocator.buddy_allocator.num_levels);
+
+    printf("Numero di allocazioni con mmap attive: %d\n", allocator.mmap_num);
 
     return 0;
 }

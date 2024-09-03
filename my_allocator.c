@@ -46,25 +46,9 @@ void* MyAllocator_malloc(MyAllocator* allocator, int size) {
     }
 }
 
-// void MyAllocator_free(MyAllocator* allocator, void* mem, int size) {
-//     if (size < PAGE_SIZE / 4) {
-//         // bisogna usare il buddy allocator
-//         BuddyAllocator_free(&allocator->buddy_allocator, mem);
-//     } else {
-//         // bisogna usare munmap
-//         for (int i = 0; i < MAX_ALLOCS; i++) {
-//             if (allocator->mmap_nodes[i].mem == mem) {
-//                 munmap(mem, allocator->mmap_nodes[i].size);
-//                 allocator->mmap_nodes[i].mem = NULL;
-//                 allocator->mmap_nodes[i].size = 0;
-//                 allocator->mmap_num--;
-//                 return;
-//             }
-//         }
-//     }
-// }
-
 void MyAllocator_free(MyAllocator* allocator, void* mem) {
+    if (mem == NULL) return;
+
     char* buddy_memory_start = allocator->buddy_allocator.memory;
     char* buddy_memory_end = buddy_memory_start + allocator->buddy_allocator.memory_size;
 
